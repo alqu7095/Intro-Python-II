@@ -1,6 +1,8 @@
 from room import Room
+from player import Player
+import sys
+from typing import Tuple, Optional, List, Dict
 
-# Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
@@ -22,7 +24,6 @@ earlier adventurers. The only exit is to the south."""),
 }
 
 
-# Link rooms together
 
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
@@ -33,19 +34,37 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-#
-# Main
-#
+def change_rooms(player: Player, direction: str):
+    """  """
+    dirs: Tuple[str, str, str, str] = ('n', 's', 'e', 'w')
 
-# Make a new player object that is currently in the 'outside' room.
+    dir_to_attr: Dict[str, str] = {dir: dir + '_to' for dir in dirs}
 
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+    try:
+        assert direction in dirs
+    except AssertionError:
+        print("please enter a valid cardinal direction")
+    else:
+
+        next_room: Optional[Room] = player.current_room.__dict__[dir_to_attr[direction]]
+
+        if next_room:
+            player.current_room = next_room
+        else:
+            print("The way is blocked! ")
+
+    finally:
+        pass
+
+def message(player: Player) -> str:
+    return f"You are in room {player.current_room.name}. {player.current_room.description}\n"
+
+def main():
+
+    player = Player("Yoneda", room['outside'])
+
+    com = input(message(player))
+    while com!='q':
+
+        change_rooms(player, com)
+        com = input(message(player))
