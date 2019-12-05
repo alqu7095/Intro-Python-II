@@ -1,2 +1,8 @@
-# Write a class to hold player information, e.g. what room they are in
-# currently.
+from typing import Optional
+from dataclasses import dataclass
+from room import Room
+
+@dataclass
+class Player:
+    name: str
+    current_room: Room
